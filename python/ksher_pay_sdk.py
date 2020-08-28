@@ -68,7 +68,10 @@ class KsherPay(object):
         sign = self.__ksher_sign(data)
         data.update({'sign': sign.decode()})
         print('请求{}接口的请求数据:\n {}'.format(url, json.dumps(data, sort_keys=True, indent=4)))
-        r = requests.get(url, data, timeout=60)
+        if m == "POST":
+            r = requests.post(url, data, timeout=60)
+        else:
+            r = requests.get(url, params=data, timeout=60)
         response = r.text
         if r.status_code == 200:
             response = r.json()
@@ -268,7 +271,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/order_query'.format(self.__DOMAIN), data=kwargs)
+        response = self._request(url='{}/order_query'.format(self.__DOMAIN), data=kwargs, m="GET")
         return response
 
     def order_close(self, **kwargs):
@@ -327,7 +330,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/refund_query'.format(self.__DOMAIN), data=kwargs)
+        response = self._request(url='{}/refund_query'.format(self.__DOMAIN), data=kwargs, m="GET")
         return response
 
     def rate_query(self, **kwargs):
@@ -341,7 +344,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/rate_query'.format(self.__DOMAIN), data=kwargs)
+        response = self._request(url='{}/rate_query'.format(self.__DOMAIN), data=kwargs,m="GET")
         return response
 
     def gateway_order_query(self, **kwargs):
@@ -353,7 +356,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/gateway_order_query'.format(self.__GATEWAY_DOMAIN), data=kwargs)
+        response = self._request(url='{}/gateway_order_query'.format(self.__GATEWAY_DOMAIN), data=kwargs, m="GET")
         return response
 
     def gateway_pay(self, **kwargs):
