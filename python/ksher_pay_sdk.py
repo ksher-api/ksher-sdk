@@ -64,7 +64,7 @@ class KsherPay(object):
             print('验签失败......')
             return False
 
-    def _request(self, url, data):
+    def _request(self, url, data, m=""):
         sign = self.__ksher_sign(data)
         data.update({'sign': sign.decode()})
         print('请求{}接口的请求数据:\n {}'.format(url, json.dumps(data, sort_keys=True, indent=4)))
