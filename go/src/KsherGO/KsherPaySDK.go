@@ -1,7 +1,7 @@
 /*
 @Time   : 2019-05-17 10:52
 @Author : apei
-@Desc   : 
+@Desc   :
 */
 
 package KsherGO
@@ -28,27 +28,27 @@ import (
 )
 
 const (
-	//PayDomain    =  "https://api.mch.ksher.net/KsherPay"
-	PayDomain    =  "http://ht.dspread.com/front/KsherPay"
-	Version		 =  "v3.0.0" // SDK version
-	GateDomain	 =	"https://gateway.ksher.com/api"
+	PayDomain = "https://api.mch.ksher.net/KsherPay"
+	// PayDomain  = "http://ht.dspread.com/front/KsherPay"
+	Version    = "v3.0.0" // SDK version
+	GateDomain = "https://gateway.ksher.com/api"
 )
 
 type Client struct {
-	AppId            string   // ksher appid
-	PrivateKey       []byte	  // 商户私钥
-	PublicKey        []byte	  // ksher公钥
+	AppId      string // ksher appid
+	PrivateKey []byte // 商户私钥
+	PublicKey  []byte // ksher公钥
 }
 
 type KsherResp struct {
-	Code             int                        `json:"code"`
-	Msg              string						`json:"msg"`
-	StatusCode       string						`json:"status_code"`
-	StatusMsg        string						`json:"status_msg"`
-	Sign             string						`json:"sign"`         //16进制字符串
-	Version			 string					    `json:"version"`
-	TimeStamp		 string						`json:"time_stamp"`
-	Data             map[string]interface{}		`json:"data"`
+	Code       int                    `json:"code"`
+	Msg        string                 `json:"msg"`
+	StatusCode string                 `json:"status_code"`
+	StatusMsg  string                 `json:"status_msg"`
+	Sign       string                 `json:"sign"` //16进制字符串
+	Version    string                 `json:"version"`
+	TimeStamp  string                 `json:"time_stamp"`
+	Data       map[string]interface{} `json:"data"`
 }
 
 // New creates a new client.
@@ -62,9 +62,9 @@ type KsherResp struct {
 func New(appId string, privateKey []byte) *Client {
 	// Ksher client
 	client := &Client{
-		AppId:       appId,
-		PrivateKey:  privateKey,
-		PublicKey:   []byte(`
+		AppId:      appId,
+		PrivateKey: privateKey,
+		PublicKey: []byte(`
 -----BEGIN PUBLIC KEY-----
 MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAL7955OCuN4I8eYNL/mixZWIXIgCvIVE
 ivlxqdpiHPcOLdQ2RPSx/pORpsUu/E9wz0mYS2PY7hNc2mBgBOQT+wUCAwEAAQ==
@@ -85,10 +85,12 @@ func GetNonceStr(num int) string {
 	}
 	return string(b)
 }
+
 //时间戳
 func GetTimeStamp() string {
 	return time.Now().Format("20060102150405")
 }
+
 /*
 签名
 1.参数名排序
@@ -99,7 +101,7 @@ func KsherSign(params url.Values, privateKeyData []byte) (sign string, err error
 	var keys []string
 	for key := range params {
 		if key != "sign" {
-			keys = append(keys, key + "=" + params.Get(key))
+			keys = append(keys, key+"="+params.Get(key))
 		}
 	}
 	sort.Strings(keys)
@@ -123,16 +125,22 @@ func KsherSign(params url.Values, privateKeyData []byte) (sign string, err error
 	fmt.Println(sign)
 	return sign, nil
 }
+
 //签名检验
 func KsherVerify(resp KsherResp, publicKeyData []byte) error {
 	sign, err := hex.DecodeString(resp.Sign)
 	var keys []string
 	for key, value := range resp.Data {
 		fmt.Println(value)
-		if key == "sign"{
+		if key == "sign" {
 			//sign = fmt.Sprintf("%x", value)
 		} else {
-			keys = append(keys, key + "=" + value.(string))
+			switch value.(type) {
+			case float64:
+				keys = append(keys, key+"="+fmt.Sprintf("%.0f", value))
+			default:
+				keys = append(keys, key+"="+value.(string))
+			}
 		}
 	}
 	sort.Strings(keys)
@@ -153,8 +161,9 @@ func KsherVerify(resp KsherResp, publicKeyData []byte) error {
 	hashed := hash.Sum(nil)
 	return rsa.VerifyPKCS1v15(publicKey.(*rsa.PublicKey), crypto.MD5, hashed, sign)
 }
+
 //post 请求
-func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byte)  (KsherResp,error){
+func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byte) (KsherResp, error) {
 	response := KsherResp{Code: -1}
 	sign, err := KsherSign(postValue, privateKeyData)
 	if err != nil {
@@ -169,7 +178,7 @@ func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byt
 	httpClient := &http.Client{}
 	resp, err := httpClient.Do(req)
 	defer resp.Body.Close()
-	if err != nil || resp.StatusCode != 200{
+	if err != nil || resp.StatusCode != 200 {
 		// handle error
 		return response, err
 	}
@@ -184,11 +193,11 @@ func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byt
 		return response, err
 	}
 	//json.NewDecoder(resp.Body).Decode(&response)
-	if response.Code == 0{
+	if response.Code == 0 {
 		err = KsherVerify(response, publicKey)
-		if err == nil{
+		if err == nil {
 			return response, nil
-		}else {
+		} else {
 			return response, err
 		}
 	}
@@ -206,20 +215,21 @@ func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byt
 :totalFee: 支付金额
 :return:
 */
-func (client Client) QuickPay(mchOrderNo, feeType, authCode, channel,operatorId string, totalFee int) (response KsherResp, err error) {
+func (client Client) QuickPay(mchOrderNo, feeType, authCode, channel, operatorId string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"auth_code": {authCode},
-		"channel": {channel},
-		"operator_id": {operatorId},
+		"total_fee":    {strconv.Itoa(totalFee)},
+		"fee_type":     {feeType},
+		"auth_code":    {authCode},
+		"channel":      {channel},
+		"operator_id":  {operatorId},
 	}
 	return KsherPost(PayDomain+"/quick_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 C扫B支付
 :param kwargs:
@@ -237,16 +247,17 @@ C扫B支付
 */
 func (client Client) JsApiPay(mchOrderNo, feeType, channel string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
+		"total_fee":    {strconv.Itoa(totalFee)},
+		"fee_type":     {feeType},
+		"channel":      {channel},
 	}
 	return KsherPost(PayDomain+"/jsapi_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 动态码支付
 :param kwargs:
@@ -268,16 +279,17 @@ func (client Client) JsApiPay(mchOrderNo, feeType, channel string, totalFee int)
 */
 func (client Client) NativePay(mchOrderNo, feeType, channel string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
+		"total_fee":    {strconv.Itoa(totalFee)},
+		"fee_type":     {feeType},
+		"channel":      {channel},
 	}
 	return KsherPost(PayDomain+"/native_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 小程序支付
 :param kwargs:
@@ -298,18 +310,19 @@ func (client Client) NativePay(mchOrderNo, feeType, channel string, totalFee int
 */
 func (client Client) MiniproPay(mchOrderNo, feeType, channel, subOpenid, channelSubAppId string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
-		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
-		"sub_openid": {subOpenid},
+		"appid":             {client.AppId},
+		"nonce_str":         {GetNonceStr(4)},
+		"time_stamp":        {GetTimeStamp()},
+		"mch_order_no":      {mchOrderNo},
+		"total_fee":         {strconv.Itoa(totalFee)},
+		"fee_type":          {feeType},
+		"channel":           {channel},
+		"sub_openid":        {subOpenid},
 		"channel_sub_appid": {channelSubAppId},
 	}
 	return KsherPost(PayDomain+"/mini_program_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 app支付
 :param kwargs:
@@ -332,18 +345,19 @@ app支付
 */
 func (client Client) AppPay(mchOrderNo, feeType, channel, subOpenid, channelSubAppId string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
-		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
-		"sub_openid": {subOpenid},
+		"appid":             {client.AppId},
+		"nonce_str":         {GetNonceStr(4)},
+		"time_stamp":        {GetTimeStamp()},
+		"mch_order_no":      {mchOrderNo},
+		"total_fee":         {strconv.Itoa(totalFee)},
+		"fee_type":          {feeType},
+		"channel":           {channel},
+		"sub_openid":        {subOpenid},
 		"channel_sub_appid": {channelSubAppId},
 	}
 	return KsherPost(PayDomain+"/app_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 H5支付，仅支持channel=alipay
 :param kwargs:
@@ -365,16 +379,17 @@ H5支付，仅支持channel=alipay
 */
 func (client Client) WapPay(mchOrderNo, feeType, channel string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
+		"total_fee":    {strconv.Itoa(totalFee)},
+		"fee_type":     {feeType},
+		"channel":      {channel},
 	}
 	return KsherPost(PayDomain+"/wap_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 PC网站支付，仅支持channel=alipay
 :param kwargs:
@@ -396,16 +411,17 @@ PC网站支付，仅支持channel=alipay
 */
 func (client Client) WepPay(mchOrderNo, feeType, channel string, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee": {strconv.Itoa(totalFee)},
-		"fee_type": {feeType},
-		"channel": {channel},
+		"total_fee":    {strconv.Itoa(totalFee)},
+		"fee_type":     {feeType},
+		"channel":      {channel},
 	}
 	return KsherPost(PayDomain+"/wap_pay", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 订单查询
 :param kwargs:
@@ -415,13 +431,14 @@ func (client Client) WepPay(mchOrderNo, feeType, channel string, totalFee int) (
 */
 func (client Client) OrderQuery(mchOrderNo string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
 	}
 	return KsherPost(PayDomain+"/order_query", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 订单关闭
 :param kwargs:
@@ -433,13 +450,14 @@ func (client Client) OrderQuery(mchOrderNo string) (response KsherResp, err erro
 */
 func (client Client) OrderClose(mchOrderNo string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
 	}
 	return KsherPost(PayDomain+"/order_close", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 订单撤销
 :param kwargs:
@@ -451,13 +469,14 @@ func (client Client) OrderClose(mchOrderNo string) (response KsherResp, err erro
 */
 func (client Client) OrderReverse(mchOrderNo string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
 	}
 	return KsherPost(PayDomain+"/order_reverse", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 订单退款
 :param kwargs:
@@ -473,17 +492,18 @@ func (client Client) OrderReverse(mchOrderNo string) (response KsherResp, err er
 */
 func (client Client) OrderRefund(mchRefundNo, feeType, mchOrderNo string, refundFee, totalFee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
-		"mch_order_no": {mchOrderNo},
+		"appid":         {client.AppId},
+		"nonce_str":     {GetNonceStr(4)},
+		"time_stamp":    {GetTimeStamp()},
+		"mch_order_no":  {mchOrderNo},
 		"mch_refund_no": {mchRefundNo},
-		"fee_type": {feeType},
-		"refund_fee": {strconv.Itoa(refundFee)},
-		"total_fee": { strconv.Itoa(totalFee)},
+		"fee_type":      {feeType},
+		"refund_fee":    {strconv.Itoa(refundFee)},
+		"total_fee":     {strconv.Itoa(totalFee)},
 	}
 	return KsherPost(PayDomain+"/order_refund", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 退款查询
 :param kwargs:
@@ -493,14 +513,15 @@ func (client Client) OrderRefund(mchRefundNo, feeType, mchOrderNo string, refund
 */
 func (client Client) RefundQuery(mchRefundNo, mchOrderNo string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
-		"mch_order_no": {mchOrderNo},
+		"appid":         {client.AppId},
+		"nonce_str":     {GetNonceStr(4)},
+		"time_stamp":    {GetTimeStamp()},
+		"mch_order_no":  {mchOrderNo},
 		"mch_refund_no": {mchRefundNo},
 	}
 	return KsherPost(PayDomain+"/refund_query", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 汇率查询
 :param kwargs:
@@ -512,31 +533,33 @@ func (client Client) RefundQuery(mchRefundNo, mchOrderNo string) (response Ksher
 */
 func (client Client) RateQuery(channel, feeType, date string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
+		"appid":      {client.AppId},
+		"nonce_str":  {GetNonceStr(4)},
 		"time_stamp": {GetTimeStamp()},
-		"channel": {channel},
-		"fee_type": {feeType},
-		"date": {date},
+		"channel":    {channel},
+		"fee_type":   {feeType},
+		"date":       {date},
 	}
 	return KsherPost(PayDomain+"/rate_query", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 聚合支付商户查询订单支付状态
 :param kwargs:
 	必传参数
 		mch_order_no
 :return:
- */
-func (client Client) GatewayOrderQuery(mch_order_no string) (response KsherResp, err error){
+*/
+func (client Client) GatewayOrderQuery(mch_order_no string) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mch_order_no},
 	}
 	return KsherPost(GateDomain+"/gateway_order_query", postValue, client.PrivateKey, client.PublicKey)
 }
+
 /*
 聚合支付商户通过API提交数据
 :param kwargs:
@@ -565,23 +588,23 @@ func (client Client) GatewayOrderQuery(mch_order_no string) (response KsherResp,
 		attach: 商户附加信息 str
 :return:
 	{'pay_content': 'https://gateway.ksher.com/mindex?order_uuid=订单uuid'}
- */
+*/
 func (client Client) GatewayPay(mch_order_no, fee_type, channel_list, mch_code, mch_redirect_url, mch_redirect_url_fail,
-	product_name, refer_url, device string, total_fee int) (response KsherResp, err error){
+	product_name, refer_url, device string, total_fee int) (response KsherResp, err error) {
 	postValue := url.Values{
-		"appid": {client.AppId},
-		"nonce_str": {GetNonceStr(4)},
-		"time_stamp": {GetTimeStamp()},
-		"mch_order_no": {mch_order_no},
-		"fee_type": {fee_type},
-		"channel_list": {channel_list},
-		"mch_code": {mch_code},
-		"mch_redirect_url": {mch_redirect_url},
+		"appid":                 {client.AppId},
+		"nonce_str":             {GetNonceStr(4)},
+		"time_stamp":            {GetTimeStamp()},
+		"mch_order_no":          {mch_order_no},
+		"fee_type":              {fee_type},
+		"channel_list":          {channel_list},
+		"mch_code":              {mch_code},
+		"mch_redirect_url":      {mch_redirect_url},
 		"mch_redirect_url_fail": {mch_redirect_url_fail},
-		"product_name": {product_name},
-		"refer_url": {refer_url},
-		"device": {device},
-		"total_fee": {strconv.Itoa(total_fee)},
+		"product_name":          {product_name},
+		"refer_url":             {refer_url},
+		"device":                {device},
+		"total_fee":             {strconv.Itoa(total_fee)},
 	}
 	return KsherPost(GateDomain+"/gateway_pay", postValue, client.PrivateKey, client.PublicKey)
 }
