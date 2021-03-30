@@ -152,7 +152,7 @@ public class ksher_pay_sdk {
      */
     public String KsherPost(String url, Map params) throws Exception {
         HttpClient client = new DefaultHttpClient();
-        HttpPost post = new HttpPost(PayDomain + url);
+        HttpPost post = new HttpPost(url);
         //设置公共参数
         params.put("appid", this.appid);
         params.put("nonce_str", RandomStringUtils.randomAlphanumeric(4));
@@ -435,7 +435,7 @@ public class ksher_pay_sdk {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
         paras.put("mch_refund_no", mchRefundNo);
         paras.put("fee_type", feeType);
-        paras.put("mchOrderNo", mchOrderNo);
+        paras.put("mch_order_no", mchOrderNo);
         paras.put("refund_fee", refundFee.toString());
         paras.put("total_fee", totalFee.toString());
         return KsherPost(PayDomain + "/order_refund", paras);
@@ -450,7 +450,7 @@ public class ksher_pay_sdk {
     public String RefundQuery(String mchRefundNo, String mchOrderNo) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
         paras.put("mch_refund_no", mchRefundNo);
-        paras.put("mchOrderNo", mchOrderNo);
+        paras.put("mch_order_no", mchOrderNo);
         return KsherPost(PayDomain + "/refund_query", paras);
     }
     /**
@@ -480,7 +480,7 @@ public class ksher_pay_sdk {
     public String GatewayOrderQuery(String mch_order_no) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
         paras.put("mch_order_no", mch_order_no);
-        return KsherPost(GateDomain + "gateway_order_query", paras);
+        return KsherPost(GateDomain + "/gateway_order_query", paras);
     }
 
     /**
@@ -525,6 +525,6 @@ public class ksher_pay_sdk {
         paras.put("refer_url", refer_url);
         paras.put("device", device);
         paras.put("total_fee", total_fee.toString());
-        return KsherPost(GateDomain + "gateway_pay", paras);
+        return KsherPost(GateDomain + "/gateway_pay", paras);
 	}
 }
