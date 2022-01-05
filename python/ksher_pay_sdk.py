@@ -397,26 +397,166 @@ class KsherPay(object):
         response = self._request(url='{}/gateway_pay'.format(self.__GATEWAY_DOMAIN), data=kwargs)
         return response
 
+    def merchant_info(self):
+        """
+        merchant_info
+        :param kwargs:
+        Mandatory params: -
+        :return:
+        {
+	        "code": 0,
+	        "status_code": "",
+	        "status_msg": "",
+	        "sign": "6d85861b1c69373ab97f1d1a96a1a0495307061759085f13fdcf2d933fe9ed7651e2c33d9923ee252942b83831d521eef11369fe2ae455ef0e11acd40c0473c7",
+	        "version": "2.0.0",
+	        "msg": "ok",
+	        "time_stamp": "2020-09-11T11:07:19.969854+08:00",
+	        "data": {
+	        	"nonce_str": "V8ULba969xAu07hSkmivC0B67HLXeNEB",
+	        	"country_support_channel": ["airpay", "alipay", "promptpay", "ktbcard", "linepay", "truemoney", "wechat"],  // 国家支持的通道
+	        	"mch_appid": "mch28811",
+	        	"business_mode": "offline", // 线上online  线下 offline
+	        	"mch_support_channel": [{
+	        		"day_sum_limit": -1,  // 当日限额  -1 表示不限额  其他表示限额金额
+	        		"pay_channel": "alipay",  //通道
+	        		"settlement_time_type": "T+1",  // 结算组
+	        		"single_order_limit": -1  // 单笔限额  -1 表示不限额
+	        	}, {
+	        		"day_sum_limit": -1,
+	        		"pay_channel": "linepay",
+	        		"settlement_time_type": "T+2",
+	        		"single_order_limit": -1
+	        	}, {
+	        		"day_sum_limit": -1,
+	        		"pay_channel": "airpay",
+	        		"settlement_time_type": "T+2",
+	        		"single_order_limit": -1
+	        	}, {
+	        		"day_sum_limit": -1,
+	        		"pay_channel": "wechat",
+	        		"settlement_time_type": "T+1",
+	        		"single_order_limit": -1
+	        	}],
+	        	"mch_id": "28811",
+	        	"allow_remote_pay": "Y",  // 是否支持远程收款  Y支持  N不支持
+	        	"allow_partial_refund": "N",  // 是否支持部分退款 Y支持  N不支持
+	        	"master_mch_id": "",
+	        	"bank_info": {
+	        		"swift_code": "BKKBTHBK",  // 开户行的全球银行编码
+	        		"account_name": "hello word",  // 银行户名
+	        		"bank_name": "004,KASIKORNBANK PUBLIC COMPANY LIMITED",  //开户行
+	        		"account_id": "86656664448"  // 银行账号
+	        	},
+	        	"logo_url": "", // 商户logo
+	        	"account_type": "Formal", // Formal 正式商户  Test 测试商户
+	        	"country_info": {
+	        		"country_name": "Thailand",  // 国家名称
+	        		"phone_code": "+66" // 国家区号
+	        	},
+	        	"mch_notify_url": "",  // 商户通知URL
+	        	"is_master_mch": "N",  // 是否是父商户  Y是  N不是
+	        	"scan_type": "2",
+	        	"wht": 0,  // ith holding tax计算
+	        	"bd_info": {
+	        		"mobile": "13031028803",
+	        		"bd_name": "vicky",
+	        		"country_id": "2",
+	        		"bd_id": "213",
+	        		"add_time": ""
+	        	},
+	        	"has_open_use_coupon": "N",  // 是否开通优惠券核销  Y开通 N不开通
+	        	"price_fee_type": "THB",  // 标价币种
+	        	"rigist_time": "2020-04-01 17:54:14",
+	        	"settlement_fee_type": "THB",  //结算币种
+	        	"agency_info": {
+	        		"mobile": "136101101101",
+	        		"agency_name": "54321@ksher.net",
+	        		"email": "vicky@ksher.net",
+	        		"agency_id": "10119",
+	        		"regist_time": "2019-10-11 10:39:11"
+	        	},
+	        	"mobile": "shhhh123456",  // 商户手机号
+	        	"time_zone": "+07:00",  // 时区
+	        	"mch_name": {
+	        		"mch_brief_name": "uvuvuvt++1",  // 商户简称
+	        		"merchant_name": "vyvycyct++1"  // 商户名称
+	        	},
+	        	"contact": "dhhhshyd",  // 商户联系人名称
+	        	"operator_list": [{
+	        		"operator_id": "13994",
+	        		"mch_id": "28811",
+	        		"state": "1",
+	        		"operator": "dhhhshyd",
+	        		"rule_id": "0",  // 0 表示老板  1 表示普通收银员
+	        		"add_time": "2020-08-13 16:43:54"
+	        	}]
+	        }
+        }
+        """
+        kwargs={'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp}
+        response = self._request(url='{}/merchant_info'.format(self.__DOMAIN), data=kwargs)
+        return response
 
-if __name__ == '__main__':
-    # Test
-
-    ksher_pay = KsherPay(appid='mch32625', privatekey='./mch_privkey.pem', pubkey='./ksher_pubkey.pem')
-    
-    # Test gateway pay 
-    # response = ksher_pay.gateway_pay(**{
-    #     'mch_order_no': '77721',
-    #     'total_fee': 90,
-    #     'fee_type': 'THB',
-    #     'channel_list': "alipay,linepay,airpay,wechat,bbl_promptpay,truemoney",
-    #     'mch_code': '23111',
-    #     'mch_redirect_url': 'https://www.baidu.com/',
-    #     'mch_redirect_url_fail': 'https://www.baidu.com/',
-    #     'refer_url': 'https://www.baidu.com/',
-    #     'product_name': 'sdd',
-    #     'device': 'H5'
-    # })
-    # print(response)
-    response = ksher_pay.gateway_order_query(**{
-            'mch_order_no': '77721'})
-    print(response)
+    def settlement_info(self, **kwargs):
+        """
+        settlement_info
+        :param kwargs:
+        Mandatory params:
+                begin_date
+                end_date
+        Optional params:        
+                pay_channel
+        :return:
+        {
+            "code": 0,
+            "data": {
+                "begin_date": "2020-07-01",
+                "end_date": "2020-09-10",
+                "nonce_str": "1At1iDK27LQxVnIvSwzqjlzgEZCsXTsj",
+                "settlement_data": [
+                    {
+                        "begin_date": "2020-08-18",
+                        "commission_fee": 0,
+                        "end_date": "2020-08-18",
+                        "pay_channel": "wechat",
+                        "settlement_amount": 10780,
+                        "settlement_date": "2020-08-19",
+                        "transfer_amount": 0,
+                        "transfer_date": "",
+                        "vat": 0
+                    },
+                    {
+                        "begin_date": "2020-08-19",
+                        "commission_fee": 0,
+                        "end_date": "2020-08-19",
+                        "pay_channel": "wechat",
+                        "settlement_amount": 2940,
+                        "settlement_date": "2020-08-20",
+                        "transfer_amount": 0,
+                        "transfer_date": "",
+                        "vat": 0
+                    },
+                    {
+                        "begin_date": "2020-08-20",
+                        "commission_fee": -57,
+                        "end_date": "2020-08-20",
+                        "pay_channel": "wechat",
+                        "settlement_amount": -2939,
+                        "settlement_date": "2020-08-21",
+                        "transfer_amount": 0,
+                        "transfer_date": "",
+                        "vat": -4
+                    }
+                ]
+            },
+            "msg": "ok",
+            "sign": "17b62a22612f5639cfb584c437d7f70d3f9da6e2a0bdcb12334ccda34eb3cde2f7d781b0352474ab689c2d9b16a7aa78bef64afbb85110fd47f468e2be091eab",
+            "status_code": "",
+            "status_msg": "",
+            "time_stamp": "2020-09-16T11:08:31.484616+08:00",
+            "version": "2.0.0"
+        }
+        """
+        kwargs.update({'mch_appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
+        response = self._request(url='{}/get_settlement_info'.format(self.__DOMAIN), data=kwargs, m="GET")
+        return response
