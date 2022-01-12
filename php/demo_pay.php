@@ -23,7 +23,7 @@ if ($action == 'native_pay') {
 		"mch_order_no" => $_POST['mch_order_no'],
 		"total_fee" => round($_POST['total_fee'], 2) * 100,
 		"fee_type" => $_POST['fee_type'],
-		"channel" => 'wechat',
+		"channel" => $_POST['channel'],
 		"notify_url" => 'http://' . $_SERVER['HTTP_HOST'] . "/test/demo/demo_notify.php", //回调地址
 		);
 
