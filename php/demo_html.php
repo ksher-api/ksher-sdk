@@ -42,6 +42,7 @@
 <body>
     <div class="pay">
         <div class="header">function:native_pay (C scan B) </div>
+        <label>before genrate C scan B API, please check </label><a href=http://api.ksher.net/KsherAPI/dev/account_wallet_support.html>account wallet support </a>
         <form name="pay_form" action="./demo_pay.php" method="post">
             <div class="group">
                 <label>mch_order_no</label>
@@ -56,6 +57,18 @@
                 <div>
                     <select name="fee_type">
                         <option value="THB">THB</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>channel</label>
+                <div>
+                    <select name="channel">
+                        <option value=promptpay>promptpay</option>
+                        <option value=alipay>alipay</option>
+                        <option value=wechat>wechat</option>
+                        <option value=airpay>airpay</option>
+                        <option value=truemoney>truemoney</option>
                     </select>
                 </div>
             </div>
@@ -79,7 +92,7 @@
                 <div><input type="text" name="total_fee" value="<?php echo 100; ?>" /></div>
             </div>
             <div class="group">
-                <label>auth_code</label>
+                <label>auth_code (data at barcode)</label>
                 <div><input type="text" name="auth_code" /></div>
             </div>
             <div class="group">
