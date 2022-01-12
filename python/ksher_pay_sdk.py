@@ -560,3 +560,107 @@ class KsherPay(object):
         kwargs.update({'mch_appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
         response = self._request(url='{}/get_settlement_info'.format(self.__DOMAIN), data=kwargs, m="GET")
         return response
+
+    def get_payout_balance(self, **kwargs):
+        """
+        get_payout_balance
+        :param kwargs:
+        Mandatory params: 
+            "fee_type": "THB"
+        :return:
+        {
+            "code": 0,
+            "data": {
+                "appid": "mch29989",
+                "balance": 15880,
+                "nonce_str": "7cfd8667342f855a22ebdeafef394cb1",
+                "result": "SUCCESS"
+            },
+            "msg": "ok",
+            "sign": "7472ba0f983329fb6f3aee10624f6a19ede9ed28ed20289d8b0ad49cd95d1777dbdfafba18220883a6de823cd759db491fd49993d208db6429e666c50e4be054",
+            "status_code": "",
+            "status_msg": "",
+            "time_stamp": "2022-01-12T19:16:45.920757+08:00",
+            "version": "3.0.0"
+        }
+        """
+        kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
+        response = self._request(url='{}/get_payout_balance'.format(self.__DOMAIN), data=kwargs, m="GET")
+        return response
+
+    def payout(self, **kwargs):
+        """
+        payout
+        :param kwargs:
+        Mandatory params: 
+            "fee_type": "THB"
+        :return:
+        {
+        "code": 0,
+        "data": {
+            "appid": "mch29989",
+            "channel_order_no": "2022011216521223001652907",
+            "ksher_order_no": "80020220112175206651966",
+            "mch_order_no": "20210110121104",
+            "mdr": 260,
+            "nonce_str": "7cfd8667342f855a22ebdeafef394cb1",
+            "receiver_name": "MISS TEST_P0170109 P0170109",
+            "result": "SUCCESS",
+            "total_fee": 100,
+            "trade_type": "PAYOUT"
+        },
+        "msg": "ok",
+        "sign": "24983cb648731139e166fca476015adc6ec5c2550ee5f873ddaafc90a68cc5d5628f6808f01939b00b615ac9b5121527e13abd003b0d8bfb6310517fb28bd4ef",
+        "status_code": "",
+        "status_msg": "",
+        "time_stamp": "2022-01-12T17:52:13.001998+08:00",
+        "version": "3.0.0"
+        }
+        """
+        kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
+        response = self._request(url='{}/payout'.format(self.__DOMAIN), data=kwargs, m="POST")
+        return response
+
+    def order_query_payout(self, **kwargs):
+        """
+        order_query_payout
+        :param kwargs:
+        Mandatory params: 
+            "channel"
+            "mch_order_no"
+        :return:
+        {
+        "code": 0,
+        "data": {
+            "appid": "mch29989",
+            "attach": "test BANK",
+            "cash_fee": 100,
+            "cash_fee_type": "THB",
+            "channel": "payout",
+            "channel_order_no": "2022011216521223001652907",
+            "device_id": "",
+            "fee_type": "THB",
+            "ksher_order_no": "80020220112175206651966",
+            "mch_order_no": "20210110121104",
+            "mdr": 260,
+            "nonce_str": "7cfd8667342f855a22ebdeafef394cb1",
+            "openid": "",
+            "operation": "ORDER-QUERY",
+            "operator_id": 15030,
+            "rate": "1.000000",
+            "raw_total_fee": 100,
+            "result": "SUCCESS",
+            "time_end": "2022-01-12 16:52:06",
+            "total_fee": 100
+        },
+        "msg": "ok",
+        "sign": "6c9ce516a981275cb4f2934fafeeaf6e66ba678acc6df39328ee880035234cfa7b25a82c0c28e1b0ca016cbead243c1ca22d360d43687e3d0f5597b32f8a377f",
+        "status_code": "",
+        "status_msg": "",
+        "time_stamp": "2022-01-12T18:44:18.769151+08:00",
+        "version": "3.0.0"
+        }
+        """
+        kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
+        response = self._request(url='{}/order_query_payout'.format(self.__DOMAIN), data=kwargs, m="GET")
+        return response
