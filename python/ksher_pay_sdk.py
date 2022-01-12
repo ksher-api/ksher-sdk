@@ -114,7 +114,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/quick_pay'.format(self.__DOMAIN), data=kwargs)
+        response = self._request(url='{}/quick_pay'.format(self.__DOMAIN), data=kwargs, m="POST")
         return response
 
 
@@ -159,7 +159,7 @@ class KsherPay(object):
         :return:
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/native_pay'.format(self.__DOMAIN), data=kwargs)
+        response = self._request(url='{}/native_pay'.format(self.__DOMAIN), data=kwargs, m="POST")
         return response
 
     def minipro_pay(self, **kwargs):
@@ -394,7 +394,7 @@ class KsherPay(object):
         {'pay_content': 'https://gateway.ksher.com/mindex?order_uuid=订单uuid'}
         """
         kwargs.update({'appid': self.appid, 'nonce_str': self.__nonce_str, 'time_stamp': self.__time_stamp})
-        response = self._request(url='{}/gateway_pay'.format(self.__GATEWAY_DOMAIN), data=kwargs)
+        response = self._request(url='{}/gateway_pay'.format(self.__GATEWAY_DOMAIN), data=kwargs, m="POST")
         return response
 
     def merchant_info(self):
