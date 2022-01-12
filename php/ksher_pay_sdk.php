@@ -86,19 +86,12 @@ EOD;
     public function _request($url, $data = array())
     {
         try {
-            if (!empty($data) && is_array($data)) {
-                $params = '';
-                $data['sign'] = $this->ksher_sign($data);
-                foreach ($data as $temp_key => $temp_value) {
-                    $params .= ($temp_key . "=" . urlencode($temp_value) . "&");
-                }
-                if (strpos($url, '?') === false) {
-                    $url .= "?";
-                }
-                $url .= "&" . $params;
-            }
+            $data['sign'] = $this->ksher_sign($data);
+            $queryData=http_build_query($data);
+
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $queryData);
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
