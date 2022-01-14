@@ -413,7 +413,7 @@ class KsherPay(object):
 	        "time_stamp": "2020-09-11T11:07:19.969854+08:00",
 	        "data": {
 	        	"nonce_str": "V8ULba969xAu07hSkmivC0B67HLXeNEB",
-	        	"country_support_channel": ["airpay", "alipay", "promptpay", "ktbcard", "linepay", "truemoney", "wechat"],  // 国家支持的通道
+	        	"country_support_channel": ["airpay", "alipay", "promptpay", "card", "linepay", "truemoney", "wechat"],  // 国家支持的通道
 	        	"mch_appid": "mch28811",
 	        	"business_mode": "offline", // 线上online  线下 offline
 	        	"mch_support_channel": [{

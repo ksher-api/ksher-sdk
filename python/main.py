@@ -12,7 +12,7 @@ if __name__ == '__main__':
     #     'mch_order_no': '77721',
     #     'total_fee': 90,
     #     'fee_type': 'THB',
-    #     'channel_list': "alipay,linepay,airpay,wechat,bbl_promptpay,truemoney",
+    #     'channel_list': "alipay,linepay,airpay,wechat,promptpay,truemoney",
     #     'mch_code': '23111',
     #     'mch_redirect_url': 'https://www.baidu.com/',
     #     'mch_redirect_url_fail': 'https://www.baidu.com/',

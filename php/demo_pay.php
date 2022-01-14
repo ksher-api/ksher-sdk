@@ -47,7 +47,7 @@ if ($action == 'native_pay') {
 		'mch_order_no' => $_POST['mch_order_no'],
 		"total_fee" => round($_POST['total_fee'], 2) * 100,
         "fee_type" => $_POST['fee_type'],
-		"channel_list" => 'promptpay,wechat,alipay,truemoney,airpay,linepay,ktbcard',
+		"channel_list" => 'promptpay,wechat,alipay,truemoney,airpay,linepay,card',
         'mch_code' => $_POST['mch_order_no'],
         'mch_redirect_url' => 'http://www.ksher.cn',
         'mch_redirect_url_fail' => 'http://www.ksher.cn',
