@@ -15,7 +15,7 @@ EOD;
 
 set_time_limit(0);
 $class = new KsherPay($appid, $privatekey);
-$action = isset($_POST['action']) ? $_POST['action'] : 'quick_pay';
+$action = isset($_POST['action']) ? $_POST['action'] : '';
 
 if ($action == 'native_pay') {
 	echo "<br />---------<br />native_pay:<br />";
@@ -77,7 +77,8 @@ if ($action == 'native_pay') {
 	echo '<br />response parameter：<br />';
     print_r($gateway_query_response);
     exit();
-} else {
+
+} elseif ($action == 'quick_pay') {
 	echo "<br />---------<br />quick_pay:<br />";
 	$quick_pay_data = array(
 		"mch_order_no" => $_POST['mch_order_no'],
@@ -95,5 +96,57 @@ if ($action == 'native_pay') {
 	if (isset($quick_pay_array['code']) && $quick_pay_array['code'] == 0 && $quick_pay_array['data']['result'] == 'SUCCESS') {
 		echo "SUCCESS";
 	}
-	exit;
+	exit();
+} elseif ($action == 'get_payout_balance') {
+	echo "<br />---------<br />get_payout_balance:<br />";
+	$get_payout_balance_data = array(
+		"fee_type" => $_POST['fee_type']
+		);
+
+	$qet_payout_balance_response = $class->get_payout_balance($get_payout_balance_data);
+	$get_payout_balance_array = json_decode($qet_payout_balance_response, true);
+	echo "<br />response parameter：<br />";
+	print_r($get_payout_balance_array);
+	if (isset($get_payout_balance_array['code']) && $get_payout_balance_array['code'] == 0 && $get_payout_balance_array['data']['result'] == 'SUCCESS') {
+		echo "SUCCESS";
+	}
+	exit();
+} elseif ($action == 'payout') {
+	echo "<br />---------<br />payout:<br />";
+	$payout_data = array(
+		"mch_order_no" => $_POST['mch_order_no'],
+		"total_fee" => round($_POST['total_fee'], 2) * 100,
+		"fee_type" => $_POST['fee_type'],
+		"channel" => "payout",
+		"receiver_mobile" => $_POST['receiver_mobile'],
+		"receiver_no" => $_POST['receiver_no'],
+		"receiver_type" => $_POST['receiver_type']
+		);
+
+	$payout_response = $class->payout($payout_data);
+	$payout_array = json_decode($payout_response, true);
+	echo "<br />response parameter：<br />";
+	print_r($payout_array);
+	// if (isset($payout_array['code']) && $payout_array['code'] == 0 && $payout_array['data']['result'] == 'SUCCESS') {
+	// 	echo "SUCCESS";
+	// }
+	exit();
+} elseif ($action == 'order_query_payout') {
+	echo "<br />---------<br />payout:<br />";
+	$order_query_payout_data = array(
+		"channel" => "payout",
+		"mch_order_no" => $_POST['mch_order_no']
+		);
+
+	$order_query_payout_response = $class->payout($order_query_payout_data);
+	$order_query_payout_array = json_decode($order_query_payout_response, true);
+	echo "<br />response parameter：<br />";
+	print_r($order_query_payout_array);
+	if (isset($order_query_payout_array['code']) && $order_query_payout_array['code'] == 0 && $order_query_payout_array['data']['result'] == 'SUCCESS') {
+		echo "SUCCESS";
+	}
+	exit();
+} else{
+	echo "not select";
+	exit();
 }
