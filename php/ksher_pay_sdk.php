@@ -443,4 +443,53 @@ EOD;
         $response = $this->_request($this->gateway_domain . '/gateway_pay', $data);
         return $response;
     }
+
+    /**
+     * get_payout_balance
+     * Required parameters
+     *     fee_type
+     */
+    public function get_payout_balance($data)
+    {
+        $data['appid'] = $this->appid;
+        $data['nonce_str'] = $this->generate_nonce_str();
+        $data['time_stamp'] = $this->time;
+        $response = $this->_request($this->pay_domain . '/get_payout_balance', $data);
+        return $response;
+    }
+
+    /**
+     * payout
+     * Required parameters
+     *     mch_order_no
+     *     channel
+     *     total_fee
+     *     fee_type
+     *     receiver_no
+     *     receiver_type
+     *     receiver_bank_code (only receiver_type=BANK)
+     */
+    public function payout($data)
+    {
+        $data['appid'] = $this->appid;
+        $data['nonce_str'] = $this->generate_nonce_str();
+        $data['time_stamp'] = $this->time;
+        $response = $this->_request($this->pay_domain . '/payout', $data);
+        return $response;
+    }
+
+    /**
+     * order_query_payout
+     * Required parameters
+     *     mch_order_no
+     *     channel
+     */
+    public function order_query_payout($data)
+    {
+        $data['appid'] = $this->appid;
+        $data['nonce_str'] = $this->generate_nonce_str();
+        $data['time_stamp'] = $this->time;
+        $response = $this->_request($this->pay_domain . '/order_query_payout', $data);
+        return $response;
+    }
 }
