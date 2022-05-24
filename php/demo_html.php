@@ -26,7 +26,7 @@
         margin: 15px;
         float: left
     }
-
+    
     .group label {
         width: 25%;
         float: left;
@@ -160,6 +160,106 @@
             </div>
         </form>
     </div>
+
+    <div class="pay">
+        <div class="header">function:get_payout_balance (Check payout balance)</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>fee_type</label>
+                <div>
+                    <select name="fee_type">
+                        <option value="THB">THB</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='get_payout_balance' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="pay">
+        <div class="header">function:payout (PAYOUT transfer API)</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+        <div class="group">
+                <label>mch_order_no</label>
+                <div><input type="text" name="mch_order_no" value="<?php echo date("YmdHis", time()) . rand(100000, 999999); ?>" /></div>
+            </div>
+            <div class="group">
+                <label>total_fee</label>
+                <div><input type="text" name="total_fee" value="<?php echo 100; ?>" /></div>
+            </div>
+            <div class="group">
+                <label>fee_type</label>
+                <div>
+                    <select name="fee_type">
+                        <option value="THB">THB</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>channel</label>
+                <div>
+                    <select id="receiver_type" onchange="apiSelectChange()" onload="apiSelectChange()">
+                        <option selected value="BANK">BANK</option>
+                        <option value="PROMPTPAY_NATID">PROMPTPAY_NATID</option>
+                        <option value="PROMPTPAY_MSISDN">PROMPTPAY_MSISDN</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>Transfer account. </br>
+                    If receiver_type=BANK, this Parameters will be bank Account number.</br>
+                    If receiver_type=PROMPTPAY_NATID, this Parameters will be PromptPay ID.</br>
+                    If receiver_type=PROMPTPAY_MSISDN, this Parameters will be PromptPay mobile phone number.</label>
+                <div><input type="text" name="receiver_no" /></div>
+            </div>
+            <div class="group" id="Menu_receiver_bank_code" style="display: none;">
+                <label>bank code. This value is mandatory when receiver_type=BANK.</br>
+                    for Bank support please see</label>
+                <div><input type="text" name="receiver_bank_code" /></div>
+            </div>
+            <div class="group">
+                <label>receiver_mobile (Mobile phone number for receiving SMS messages)</label>
+                <div><input type="text" name="receiver_mobile" /></div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='payout' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="pay">
+        <div class="header">function:order_query_payout (Check status payout)</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>mch_order_no</label>
+                <div><input type="text" name="mch_order_no" value="" /></div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='order_query_payout' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+
 </body>
 
 </html>
+
+<script type="text/javascript">
+    function apiSelectChange() {
+        if (document.getElementById("receiver_type").value == 'BANK')
+                {
+                    document.getElementById("Menu_receiver_bank_code").style.display = "block";
+                }
+                else{
+                    document.getElementById("Menu_receiver_bank_code").style.display = "none";
+                }
+            }
+</script>
