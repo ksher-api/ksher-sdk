@@ -263,3 +263,18 @@
                 }
             }
 </script>
+
+<div class="pay">
+        <div class="header">function: notification check</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>response text</label>
+                <div><input type="text" name="notify" /></div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='notify' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>

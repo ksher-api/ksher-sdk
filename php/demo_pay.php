@@ -146,6 +146,33 @@ if ($action == 'native_pay') {
 		echo "SUCCESS";
 	}
 	exit();
+} else if ($action == 'notify') {
+	echo "<br />---------<br />notify:<br />";
+	$notify_data = $_POST['notify'];
+	$notify_array = json_decode($notify_data,true);
+	echo "<br />notify_array parameter：<br />";
+	print_r($notify_array);
+
+	if( array_key_exists("code", $notify_array)
+    && array_key_exists("sign", $notify_array)
+    && array_key_exists("data", $notify_array)
+    && array_key_exists("result", $notify_array['data'])
+    && $notify_array['data']["result"] == "SUCCESS"){
+    //3.1验证签名
+    $verify_sign = $class->verify_ksher_sign($notify_array['data'], $notify_array['sign']);
+
+    if( $verify_sign == 1 ){
+        //更新订单信息 change order status
+        //....
+        echo "<br />change order status <br />";
+        echo json_encode(array('result'=>'SUCCESS',"msg"=>'OK'));
+    } else {
+        echo "<br />VERIFY_KSHER_SIGN_FAIL <br />";
+        echo json_encode(array('result'=>'Fail',"msg"=>'VERIFY_KSHER_SIGN_FAIL'));
+    }
+}
+
+	exit;
 } else{
 	echo "not select";
 	exit();
