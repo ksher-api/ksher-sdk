@@ -46,11 +46,15 @@ if( array_key_exists("code", $data_array)
         //更新订单信息 change order status
         //....
         tempLog('change order status');
+        echo json_encode(array('result'=>'SUCCESS',"msg"=>'OK'));
+    } else {
+        tempLog('VERIFY_KSHER_SIGN_FAIL');
+        echo json_encode(array('result'=>'Fail',"msg"=>'VERIFY_KSHER_SIGN_FAIL'));
     }
 }
 //4.返回信息
 tempLog("------notify data ".$time." end------" );
-echo json_encode(array('result'=>'SUCCESS',"msg"=>'OK'));
+
 
 
 function tempLog( $string ){
