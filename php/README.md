@@ -1,7 +1,5 @@
 # PHP SDK
 
-for new API please see https://github.com/ksher-solutions/payment_sdk_php
-
 ## System request
 
 PHP version Support  >= 5.5
