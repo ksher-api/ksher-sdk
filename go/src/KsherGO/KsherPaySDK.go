@@ -28,10 +28,9 @@ import (
 )
 
 const (
-	PayDomain = "https://api.mch.ksher.net/KsherPay"
-	// PayDomain  = "http://ht.dspread.com/front/KsherPay"
-	Version    = "v3.0.0" // SDK version
+	PayDomain  = "https://api.mch.ksher.net/KsherPay"
 	GateDomain = "https://gateway.ksher.com/api"
+	Version    = "v3.0.0" // SDK version
 )
 
 type Client struct {
@@ -72,6 +71,16 @@ ivlxqdpiHPcOLdQ2RPSx/pORpsUu/E9wz0mYS2PY7hNc2mBgBOQT+wUCAwEAAQ==
 	}
 
 	return client
+}
+
+// alternative way to import private key from read path file
+func ReadPrivateKeyFromPath(path string) []byte {
+	// Read the contents of the private key .pem file
+	privateKey, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+	return privateKey
 }
 
 // 生成随机数
@@ -135,11 +144,18 @@ func KsherVerify(resp KsherResp, publicKeyData []byte) error {
 		if key == "sign" {
 			//sign = fmt.Sprintf("%x", value)
 		} else {
-			switch value.(type) {
-			case float64:
-				keys = append(keys, key+"="+fmt.Sprintf("%.0f", value))
-			default:
-				keys = append(keys, key+"="+value.(string))
+			if val, ok := value.(string); ok {
+				keys = append(keys, key+"="+val)
+			} else if val, ok := value.([]byte); ok {
+				keys = append(keys, key+"="+string(val))
+			} else if val, ok := value.(float64); ok {
+				keys = append(keys, key+"="+fmt.Sprintf("%.0f", val))
+			} else {
+				str, err := json.Marshal(value)
+				if err != nil {
+					return err
+				}
+				keys = append(keys, key+"="+string(str))
 			}
 		}
 	}
@@ -235,9 +251,9 @@ C扫B支付
 :param kwargs:
 必传参数
 	mch_order_no
-	total_fee
 	fee_type
 	channel
+	total_fee
 选传参数
 	redirect_url
 	notify_url
@@ -251,9 +267,9 @@ func (client Client) JsApiPay(mchOrderNo, feeType, channel string, totalFee int)
 		"nonce_str":    {GetNonceStr(4)},
 		"time_stamp":   {GetTimeStamp()},
 		"mch_order_no": {mchOrderNo},
-		"total_fee":    {strconv.Itoa(totalFee)},
 		"fee_type":     {feeType},
 		"channel":      {channel},
+		"total_fee":    {strconv.Itoa(totalFee)},
 	}
 	return KsherPost(PayDomain+"/jsapi_pay", postValue, client.PrivateKey, client.PublicKey)
 }
@@ -565,7 +581,6 @@ func (client Client) GatewayOrderQuery(mch_order_no string) (response KsherResp,
 :param kwargs:
 	必传参数
 		mch_order_no: 商户订单号 str
-		total_fee: 金额(分) int
 		fee_type: 货币种类 str
 		channel_list: 支付通道 str
 		mch_code: 商户订单code str
@@ -574,6 +589,7 @@ func (client Client) GatewayOrderQuery(mch_order_no string) (response KsherResp,
 		product_name: 商品描述 str
 		refer_url: 商家refer str
 		device: 设备名称(PC or H5) str
+		total_fee: 金额(分) int
 	选传参数
 		color: 横幅颜色 str
 		background: 横幅背景图片 str
@@ -607,4 +623,14 @@ func (client Client) GatewayPay(mch_order_no, fee_type, channel_list, mch_code, 
 		"total_fee":             {strconv.Itoa(total_fee)},
 	}
 	return KsherPost(GateDomain+"/gateway_pay", postValue, client.PrivateKey, client.PublicKey)
+}
+
+func (client Client) CancelOrder(mch_order_no string) (response KsherResp, err error) {
+	postValue := url.Values{
+		"appid":        {client.AppId},
+		"nonce_str":    {GetNonceStr(4)},
+		"time_stamp":   {GetTimeStamp()},
+		"mch_order_no": {mch_order_no},
+	}
+	return KsherPost(GateDomain+"/cancel_order", postValue, client.PrivateKey, client.PublicKey)
 }
