@@ -116,6 +116,72 @@
     </div>
 
     <div class="pay">
+        <div class="header">function:order_query (Check status pay on C scan B and B scan C)</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>mch_order_no</label>
+                <div><input type="text" name="mch_order_no" value="" /></div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='order_query' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="pay">
+        <div class="header">function:order refund</div>
+        <label>in case refund transaction create from Gateway, please use Gateway order query to get Pay_mch_order_no and using mch_order_no = Pay_mch_order_no value on refund API, or use ksher_order_no to refund</label>
+        <label>before refund, please check </label><a href=http://api.ksher.net/KsherAPI/dev/faq.html#_refund_rules_method> Refund Rules & Method </a>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>mch_order_no</label>
+                <div><input type="text" name="mch_order_no" value="" /></div>
+            </div>
+            <div class="group">
+                <label>mch_refund_no</label>
+                <div><input type="text" name="mch_refund_no" value="" /></div>
+            </div>
+            <div class="group">
+                <label>total_fee</label>
+                <div><input type="text" name="total_fee" value="<?php echo 100; ?>" /></div>
+            </div>
+            <div class="group">
+                <label>refund_fee</label>
+                <div><input type="text" name="refund_fee" value="<?php echo 100; ?>" /></div>
+            </div>
+            <div class="group">
+                <label>fee_type</label>
+                <div>
+                    <select name="fee_type">
+                        <option value="THB">THB</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='order_refund' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="pay">
+        <div class="header">function:refund_query (Check status refund)</div>
+        <form name="pay_form" action="./demo_pay.php" method="post">
+            <div class="group">
+                <label>mch_order_no</label>
+                <div><input type="text" name="mch_order_no" value="" /></div>
+            </div>
+            <div class="group">
+                <label>&nbsp;</label>
+                <input type='hidden' name='action' value='refund_query' />
+                <div><input type="submit" value="submit" /> </div>
+            </div>
+        </form>
+    </div>
+    <div class="pay">
         <div class="header">function:gateway_pay (Website)</div>
         <form name="pay_form" action="./demo_pay.php" method="post">
             <div class="group">

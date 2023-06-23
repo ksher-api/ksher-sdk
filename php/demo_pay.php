@@ -53,7 +53,7 @@ if ($action == 'native_pay') {
         'mch_redirect_url_fail' => 'http://www.ksher.cn',
 		'product_name' => $_POST['product_name'],
         'refer_url' => 'http://www.ksher.cn',
-		"notify_url" => 'http://' . $_SERVER['HTTP_HOST'] . "/test/demo/demo_notify.php",
+		"mch_notify_url" => 'http://' . $_SERVER['HTTP_HOST'] . "/test/demo/demo_notify.php",
 		'device' => 'PC'
 	);
 
@@ -69,6 +69,41 @@ if ($action == 'native_pay') {
 		echo $gateway_pay_response;
     }
     exit();
+} elseif ($action == 'order_query') {
+	echo "<br />order query<br />";
+	$order_query_data = array('mch_order_no' => $_POST['mch_order_no']);
+    $order_query_response = $class->order_query($order_query_data);
+    $order_query_array = json_decode($order_query_response, true);
+	echo '<br />response parameter：<br />';
+    print_r($order_query_response);
+    exit();
+
+} elseif ($action == 'order_refund') {
+	echo "<br />order_refund<br />";
+	$order_refund_data = array(
+		'mch_order_no' => $_POST['mch_order_no'],
+		'mch_refund_no' => $_POST['mch_refund_no'],
+		"total_fee" => round($_POST['total_fee'], 2) * 100,
+		"refund_fee" => round($_POST['refund_fee'], 2) * 100,
+		'fee_type' => $_POST['fee_type'],
+	);
+    $order_refund_response = $class->order_refund($order_refund_data);
+    $order_refund_array = json_decode($order_refund_response, true);
+	echo '<br />response parameter：<br />';
+    print_r($order_refund_response);
+    exit();
+
+}  elseif ($action == 'refund_query') {
+	echo "<br />refund_query<br />";
+	$refund_query_data = array(
+		'mch_order_no' => $_POST['mch_order_no']
+	);
+    $refund_query_response = $class->refund_query($refund_query_data);
+    $refund_query_array = json_decode($refund_query_response, true);
+	echo '<br />response parameter：<br />';
+    print_r($refund_query_response);
+    exit();
+
 } elseif ($action == 'gateway_order_query') {
 	echo "<br />gateway_pay_query<br />";
 	$gateway_query_data = array('mch_order_no' => $_POST['mch_order_no']);
