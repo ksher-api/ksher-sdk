@@ -41,6 +41,16 @@ namespace Ksherpay
             parameters.Add("sign", SignRequest(parameters));
             return request("POST", __GATEWAY_DOMAIN + "/gateway_order_query", parameters);
         }
+
+        public string cancel_order(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __GATEWAY_DOMAIN + "/cancel_order", parameters);
+        }
+
         public string native_pay(IDictionary<string, string> parameters)
         {
             parameters.Add("appid", Appid);
@@ -49,6 +59,7 @@ namespace Ksherpay
             parameters.Add("sign", SignRequest(parameters));
             return request("POST", __DOMAIN + "/native_pay", parameters);
         }
+
         public string order_query(IDictionary<string, string> parameters)
         {
             parameters.Add("appid", Appid);
@@ -66,13 +77,113 @@ namespace Ksherpay
             parameters.Add("sign", SignRequest(parameters));
             return request("POST", __DOMAIN + "/order_refund", parameters);
         }
-        public string cancle(IDictionary<string, string> parameters)
+
+        public string refund_query(IDictionary<string, string> parameters)
         {
             parameters.Add("appid", Appid);
             parameters.Add("nonce_str", MyUtil.Rand());
             parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
             parameters.Add("sign", SignRequest(parameters));
-            return request("POST", __DOMAIN + "/order_refund", parameters);
+            return request("POST", __DOMAIN + "/refund_query", parameters);
+        }
+
+        public string order_close(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/order_close", parameters);
+        }
+
+        public string quick_pay(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/quick_pay", parameters);
+        }
+
+        public string order_reverse(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/order_reverse", parameters);
+        }
+
+        public string rate_query(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/rate_query", parameters);
+        }
+
+        public string merchant_info(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/merchant_info", parameters);
+        }
+
+        public string app_pay(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/app_pay", parameters);
+        }
+
+        public string mini_program_pay(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/mini_program_pay", parameters);
+        }
+
+        public string jsapi_pay(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/jsapi_pay", parameters);
+        }
+
+        public string get_payout_balance(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/get_payout_balance", parameters);
+        }
+
+        public string payout(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/payout", parameters);
+        }
+
+        public string order_query_payout(IDictionary<string, string> parameters)
+        {
+            parameters.Add("appid", Appid);
+            parameters.Add("nonce_str", MyUtil.Rand());
+            parameters.Add("time_stamp", MyUtil.GenerateTimestamp());
+            parameters.Add("sign", SignRequest(parameters));
+            return request("POST", __DOMAIN + "/order_query_payout", parameters);
         }
 
         private string request(string method, string endpoint, IDictionary<string, string> parameters)
