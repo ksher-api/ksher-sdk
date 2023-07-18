@@ -16,18 +16,22 @@ namespace netcoreConsole
             Ksherpay.Ksherpay ksherpay = new Ksherpay.Ksherpay(appid, privatekey);
             string cmd = "";
 
-            while (cmd != "9")
+            while (cmd != "99")
             {
                 Console.WriteLine("--- redirect API ---");
-                Console.WriteLine("1 - create order");
-                Console.WriteLine("2 - query order");
-                Console.WriteLine("3 - refund order");
-                Console.WriteLine("4 - check signature notic");
+                Console.WriteLine("1 - create order   (gateway_pay)");
+                Console.WriteLine("2 - query order    (gateway_order_query)");
+                Console.WriteLine("3 - refund order   (order_refund)");
+                Console.WriteLine("4 - check signature send from mch_notify_url");
                 Console.WriteLine("--- cscanb API ---");
-                Console.WriteLine("5 - create order");
-                Console.WriteLine("6 - query order");
-                Console.WriteLine("7 - refund order");
-                Console.WriteLine("9 - exit");
+                Console.WriteLine("5 - create order   (native_pay)");
+                Console.WriteLine("6 - query order    (order_query)");
+                Console.WriteLine("7 - refund order   (order_refund)");
+                Console.WriteLine("--- bscanc API ---");
+                Console.WriteLine("8 - create order   (quick_pay)");
+                Console.WriteLine("9 - query order    (order_query)");
+                Console.WriteLine("10 - refund order  (order_refund)");
+                Console.WriteLine("99 - exit");
 
                 cmd = Console.ReadLine();
 
@@ -48,7 +52,7 @@ namespace netcoreConsole
                     createRequest.Add("mch_redirect_url", @"https://webhook.site/effdbb5f-0c80-4efe-b7e8-c9f9585461d8/pass");
                     createRequest.Add("mch_redirect_url_fail", @"https://webhook.site/effdbb5f-0c80-4efe-b7e8-c9f9585461d8/fail");
                     createRequest.Add("mch_notify_url", @"https://webhook.site/effdbb5f-0c80-4efe-b7e8-c9f9585461d8/pass");
-                    createRequest.Add("channel_list", "card");
+                    createRequest.Add("channel_list", "promptpay,linepay,airpay,truemoney,atome,card,ktc_instal,kbank_instal,kcc_instal,kfc_instal,scb_easy,bbl_deeplink,baybank_deeplink,kplus,alipay,wechat");
                     createRequest.Add("product_name", "test order");
 
                     Console.WriteLine("Request text: ");
@@ -101,7 +105,7 @@ namespace netcoreConsole
                     Console.WriteLine("Request text: ");
                     Ksherpay.MyUtil.logDictionary(refundRequest);
 
-                    var response_refund = ksherpay.refund(refundRequest);
+                    var response_refund = ksherpay.order_refund(refundRequest);
                     Console.WriteLine(response_refund);
                 }
                 else if (cmd == "4")
@@ -170,11 +174,80 @@ namespace netcoreConsole
                     refundRequest.Add("refund_fee", total_fee);
                     refundRequest.Add("fee_type", "THB");
 
-                    var response_refund = ksherpay.refund(refundRequest);
+                    var response_refund = ksherpay.order_refund(refundRequest);
                     Console.WriteLine(response_refund);
                 }
+                else if (cmd == "8")
+                {
+                    string mch_order_no = Ksherpay.MyUtil.GenerateTimestamp();
+
+                    Console.WriteLine("Enter amount (int only, Enter 150 is 1.50): ");
+                    string total_fee = Console.ReadLine();
+
+                    Console.WriteLine("Enter channel (alipay,wechat,airpay,linepay,truemoney) ");
+                    Console.WriteLine("(Please check mid type support for make sure account support)");
+                    string channel = Console.ReadLine();
+
+                    Console.WriteLine("Enter value read from QR or Scanner: ");
+                    string auth_code = Console.ReadLine();
+
+                    IDictionary<string, string> createRequest = new Dictionary<string, string>();
+                    createRequest.Add("mch_order_no", mch_order_no);
+                    createRequest.Add("auth_code", auth_code);
+                    createRequest.Add("total_fee", total_fee);
+                    createRequest.Add("fee_type", "THB");
+                    createRequest.Add("attach", "test order");
+                    if (channel != "") // if not fill API will auto detect from format QR
+                    {
+                        createRequest.Add("channel", channel);
+                    }
+
+                    Console.WriteLine("Request text: ");
+                    Ksherpay.MyUtil.logDictionary(createRequest);
+
+                    var response_create = ksherpay.quick_pay(createRequest);
+                    Console.WriteLine(response_create);
+                }
+
+                else if (cmd == "9")
+                {
+                    Console.WriteLine("Enter mch_order_no: ");
+                    string mch_order_no = Console.ReadLine();
+
+                    IDictionary<string, string> queryRequest = new Dictionary<string, string>();
+                    queryRequest.Add("mch_order_no", mch_order_no);
+
+                    Console.WriteLine("Request text: ");
+                    Ksherpay.MyUtil.logDictionary(queryRequest);
+
+                    var response_query = ksherpay.order_query(queryRequest);
+                    Console.WriteLine(response_query);
+                }
+
+                else if (cmd == "10")
+                {
+                    Console.WriteLine("Enter mch_order_no: ");
+                    string mch_order_no = Console.ReadLine();
+
+                    Console.WriteLine("Enter amount (int only, Enter 150 is 1.50): ");
+                    string total_fee = Console.ReadLine();
+
+                    string mch_refund_no = Ksherpay.MyUtil.GenerateTimestamp();
+
+                    IDictionary<string, string> refundRequest = new Dictionary<string, string>();
+                    refundRequest.Add("mch_order_no", mch_order_no);
+                    refundRequest.Add("mch_refund_no", mch_refund_no);
+                    refundRequest.Add("total_fee", total_fee);
+                    refundRequest.Add("refund_fee", total_fee);
+                    refundRequest.Add("fee_type", "THB");
+
+                    var response_refund = ksherpay.order_refund(refundRequest);
+                    Console.WriteLine(response_refund);
+                }
+
                 Console.WriteLine("===========");
             }
+
         }
         public static void logDictionary(IDictionary<string, string> parameters)
         {

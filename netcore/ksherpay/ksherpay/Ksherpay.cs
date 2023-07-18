@@ -69,7 +69,7 @@ namespace Ksherpay
             return request("POST", __DOMAIN + "/order_query", parameters);
         }
 
-        public string refund(IDictionary<string, string> parameters)
+        public string order_refund(IDictionary<string, string> parameters)
         {
             parameters.Add("appid", Appid);
             parameters.Add("nonce_str", MyUtil.Rand());
