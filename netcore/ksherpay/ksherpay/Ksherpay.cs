@@ -17,7 +17,8 @@ namespace Ksherpay
 
         public string Appid;
         public string Privatekey;
-        public string Pubkey = System.AppDomain.CurrentDomain.BaseDirectory + @"\ksher_pubkey.pem";
+
+        public string Pubkey = System.AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + @"ksher_pubkey.pem";
 
         public Ksherpay(string appid, string privatekey)
         {

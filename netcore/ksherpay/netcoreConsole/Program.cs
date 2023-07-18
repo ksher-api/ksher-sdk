@@ -53,6 +53,7 @@ namespace netcoreConsole
 
                     Console.WriteLine("Request text: ");
                     Ksherpay.MyUtil.logDictionary(createRequest);
+
                     var response_create = ksherpay.gateway_pay(createRequest);
                     Console.WriteLine(response_create);
                 }
@@ -97,6 +98,9 @@ namespace netcoreConsole
                     refundRequest.Add("refund_fee", total_fee);
                     refundRequest.Add("fee_type", "THB");
 
+                    Console.WriteLine("Request text: ");
+                    Ksherpay.MyUtil.logDictionary(refundRequest);
+
                     var response_refund = ksherpay.refund(refundRequest);
                     Console.WriteLine(response_refund);
                 }
@@ -124,8 +128,12 @@ namespace netcoreConsole
                     IDictionary<string, string> createRequest = new Dictionary<string, string>();
                     createRequest.Add("mch_order_no", mch_order_no);
                     createRequest.Add("total_fee", total_fee);
+                    createRequest.Add("fee_type", "THB");
                     createRequest.Add("channel", channel);
                     createRequest.Add("attach", "test order");
+
+                    Console.WriteLine("Request text: ");
+                    Ksherpay.MyUtil.logDictionary(createRequest);
 
                     var response_create = ksherpay.native_pay(createRequest);
                     Console.WriteLine(response_create);
@@ -138,6 +146,9 @@ namespace netcoreConsole
 
                     IDictionary<string, string> queryRequest = new Dictionary<string, string>();
                     queryRequest.Add("mch_order_no", mch_order_no);
+
+                    Console.WriteLine("Request text: ");
+                    Ksherpay.MyUtil.logDictionary(queryRequest);
 
                     var response_query = ksherpay.order_query(queryRequest);
                     Console.WriteLine(response_query);
