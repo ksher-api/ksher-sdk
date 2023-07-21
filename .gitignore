@@ -208,3 +208,6 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,python,go
+
+# Remove .DS_Store Files.
+**/.DS_Store
