@@ -11,6 +11,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Signature;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -20,6 +21,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /***
@@ -80,8 +82,9 @@ public class ksher_pay_sdk {
      * 请求参数排序
      * @param params
      * @return
+     * @throws UnsupportedEncodingException
      */
-    public byte[] getParamsSort(Map params)
+    public byte[] getParamsSort(Map params) throws UnsupportedEncodingException
     {
         java.util.TreeMap<String, String> sortParas = new java.util.TreeMap<String, String>();
         sortParas.putAll(params);
@@ -91,7 +94,7 @@ public class ksher_pay_sdk {
             String key = it.next();
             encryptedStr.append(key).append("=").append(params.get(key));
         }
-        return encryptedStr.toString().getBytes();
+        return encryptedStr.toString().getBytes("UTF-8");
     }
 
     /**
@@ -166,7 +169,8 @@ public class ksher_pay_sdk {
         }
         String sign = KsherSign(params);
         urlParameters.add(new BasicNameValuePair("sign", sign));
-        post.setEntity(new UrlEncodedFormEntity(urlParameters));
+        //System.out.println(urlParameters.toString());
+        post.setEntity(new UrlEncodedFormEntity(urlParameters, StandardCharsets.UTF_8));
         HttpResponse response = client.execute(post);
         BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
         StringBuffer result = new StringBuffer();
@@ -440,6 +444,7 @@ public class ksher_pay_sdk {
         paras.put("total_fee", totalFee.toString());
         return KsherPost(PayDomain + "/order_refund", paras);
     }
+
     /**
     退款查询
     :param kwargs:
@@ -509,6 +514,7 @@ public class ksher_pay_sdk {
 		lang: 语言(en,cn,th) str
 		shop_name: logo旁文案 str
 		attach: 商户附加信息 str
+        mch_notify_url: the url to receive the asynchronous notification about the status of the payment from Ksher; If merchant leaves this field blank, then there will be no notification to send back to merchant.
     :return:
 	{'pay_content': 'https://gateway.ksher.com/mindex?order_uuid=订单uuid'}
 	**/
@@ -527,4 +533,5 @@ public class ksher_pay_sdk {
         paras.put("total_fee", total_fee.toString());
         return KsherPost(GateDomain + "/gateway_pay", paras);
 	}
+
 }
