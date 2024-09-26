@@ -192,30 +192,37 @@ public class ksher_pay_sdk {
 
     /**
      * 商户扫用户(B扫C)
-     * @param mchOrderNo 商户订单号
-     * @param feeType 支付币种 'THB'
-     * @param authCode 支付条码
+     * @param mch_order_no 商户订单号
+     * @param fee_type 支付币种 'THB'
+     * @param auth_code 支付条码
      * @param channel 支付通道 wechat aplipay
-     * @param operatorId 操作员编号
-     * @param totalFee 支付金额
+     * @param operator_id 操作员编号
+     * @param total_fee 支付金额
      * @return
      */
-    public String QuickPay(String mchOrderNo, String feeType, String authCode, String channel, String operatorId, Integer totalFee) {
+    public String QuickPay(String mch_order_no, String fee_type, String auth_code, String channel, String operator_id, Integer total_fee) {
         try {
             java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-            paras.put("mch_order_no", mchOrderNo);
-            paras.put("total_fee", totalFee.toString());
-            paras.put("fee_type", feeType);
-            paras.put("auth_code", authCode);
+            paras.put("mch_order_no", mch_order_no);
+            paras.put("total_fee", total_fee.toString());
+            paras.put("fee_type", fee_type);
+            paras.put("auth_code", auth_code);
             paras.put("channel", channel);
-            paras.put("operator_id", operatorId);
+            paras.put("operator_id", operator_id);
             return KsherPost(PayDomain + "/quick_pay", paras);
         } catch (Exception ex) {
             ex.printStackTrace();
             return ex.getMessage();
         }
     }
-
+    public String QuickPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/quick_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
     /**
      * C扫B支付
      * 必传参数
@@ -230,12 +237,12 @@ public class ksher_pay_sdk {
      * 	operator_id
      * @return
      */
-    public String JsApiPay(String mchOrderNo,String feeType,String channel,Integer totalFee){
+    public String JsApiPay(String mch_order_no,String fee_type,String channel,Integer total_fee){
         try {
             java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-            paras.put("mch_order_no", mchOrderNo);
-            paras.put("total_fee", totalFee.toString());
-            paras.put("fee_type", feeType);
+            paras.put("mch_order_no", mch_order_no);
+            paras.put("total_fee", total_fee.toString());
+            paras.put("fee_type", fee_type);
             paras.put("channel", channel);
             return KsherPost(PayDomain + "/jsapi_pay", paras);
         } catch (Exception ex) {
@@ -243,6 +250,15 @@ public class ksher_pay_sdk {
             return ex.getMessage();
         }
     }
+    public String JsApiPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/jsapi_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
+
     /**
     动态码支付
     :param kwargs:
@@ -262,13 +278,21 @@ public class ksher_pay_sdk {
         img_type
     :return:
     **/
-    public String NativePay(String mchOrderNo, String feeType, String channel,Integer totalFee) throws Exception {
+    public String NativePay(String mch_order_no, String fee_type, String channel, Integer total_fee) throws Exception {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("total_fee", totalFee.toString());
-        paras.put("fee_type", feeType);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("total_fee", total_fee.toString());
+        paras.put("fee_type", fee_type);
         paras.put("channel", channel);
         return KsherPost(PayDomain + "/native_pay", paras);
+    }
+    public String NativePay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/native_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     小程序支付
@@ -288,15 +312,23 @@ public class ksher_pay_sdk {
         operator_id
     :return:
     **/
-    public String MiniproPay(String mchOrderNo, String feeType, String channel, String subOpenid, String channelSubAppId, Integer totalFee) throws Exception{
+    public String MiniproPay(String mch_order_no, String fee_type, String channel, String sub_openid, String channel_sub_appid, Integer total_fee) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("total_fee", totalFee.toString());
-        paras.put("fee_type", feeType);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("total_fee", total_fee.toString());
+        paras.put("fee_type", fee_type);
         paras.put("channel", channel);
-        paras.put("sub_openid", subOpenid);
-        paras.put("channel_sub_appid", channelSubAppId);
+        paras.put("sub_openid", sub_openid);
+        paras.put("channel_sub_appid", channel_sub_appid);
         return KsherPost(PayDomain + "/mini_program_pay", paras);
+    }
+    public String MiniproPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/mini_program_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     app支付
@@ -318,15 +350,23 @@ public class ksher_pay_sdk {
         refer_url 仅当channel为alipay时需要
     :return:
     **/
-    public String AppPay(String mchOrderNo,String feeType,String channel,String subOpenid,String channelSubAppId, Integer totalFee) throws Exception {
+    public String AppPay(String mch_order_no,String fee_type,String channel,String sub_openid,String channel_sub_appid, Integer total_fee) throws Exception {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("total_fee", totalFee.toString());
-        paras.put("fee_type", feeType);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("total_fee", total_fee.toString());
+        paras.put("fee_type", fee_type);
         paras.put("channel", channel);
-        paras.put("sub_openid", subOpenid);
-        paras.put("channel_sub_appid", channelSubAppId);
+        paras.put("sub_openid", sub_openid);
+        paras.put("channel_sub_appid", channel_sub_appid);
         return KsherPost(PayDomain + "/app_pay", paras);
+    }
+    public String AppPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/app_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     H5支付，仅支持channel=alipay
@@ -347,11 +387,11 @@ public class ksher_pay_sdk {
         refer_url
     :return:
     **/
-    public String WapPay(String mchOrderNo,String feeType,String channel, Integer totalFee) throws Exception {
+    public String WapPay(String mch_order_no,String fee_type,String channel, Integer total_fee) throws Exception {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("total_fee", totalFee.toString());
-        paras.put("fee_type", feeType);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("total_fee", total_fee.toString());
+        paras.put("fee_type", fee_type);
         paras.put("channel", channel);
         return KsherPost(PayDomain + "/wap_pay", paras);
     }
@@ -374,13 +414,21 @@ public class ksher_pay_sdk {
         refer_url
     :return:
     **/
-    public String WepPay(String mchOrderNo,String feeType,String channel,Integer totalFee)throws Exception{
+    public String WepPay(String mch_order_no,String fee_type,String channel,Integer total_fee)throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("total_fee", totalFee.toString());
-        paras.put("fee_type", feeType);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("total_fee", total_fee.toString());
+        paras.put("fee_type", fee_type);
         paras.put("channel", channel);
         return KsherPost(PayDomain + "/wap_pay", paras);
+    }
+    public String WepPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/wap_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     订单查询
@@ -389,11 +437,21 @@ public class ksher_pay_sdk {
         mch_order_no、ksher_order_no、channel_order_no三选一
     :return:
     **/
-    public String OrderQuery(String mchOrderNo) throws Exception{
+    public String OrderQuery(String mch_order_no) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
+        paras.put("mch_order_no", mch_order_no);
         return KsherPost(PayDomain + "/order_query", paras);
     }
+
+    public String OrderQuery(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/order_query", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
+
     /**
     订单关闭
     :param kwargs:
@@ -403,10 +461,18 @@ public class ksher_pay_sdk {
         operator_id
     :return:
     **/
-    public String OrderClose(String mchOrderNo) throws Exception {
+    public String OrderClose(String mch_order_no) throws Exception {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
+        paras.put("mch_order_no", mch_order_no);
         return KsherPost(PayDomain + "/order_close", paras);
+    }
+    public String OrderClose(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/order_close", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     订单撤销
@@ -417,10 +483,18 @@ public class ksher_pay_sdk {
         operator_id
     :return:
     **/
-    public String OrderReverse(String mchOrderNo) throws Exception{
+    public String OrderReverse(String mch_order_no) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_order_no", mchOrderNo);
+        paras.put("mch_order_no", mch_order_no);
         return KsherPost(PayDomain + "/order_reverse", paras);
+    }
+    public String OrderReverse(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/order_reverse", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     订单退款
@@ -435,16 +509,23 @@ public class ksher_pay_sdk {
         operator_id
     :return:
     **/
-    public String OrderRefund(String mchRefundNo,String feeType,String mchOrderNo,Integer refundFee,Integer totalFee) throws Exception {
+    public String OrderRefund(String mch_refund_no,String fee_type,String mch_order_no,Integer refund_fee,Integer total_fee) throws Exception {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_refund_no", mchRefundNo);
-        paras.put("fee_type", feeType);
-        paras.put("mch_order_no", mchOrderNo);
-        paras.put("refund_fee", refundFee.toString());
-        paras.put("total_fee", totalFee.toString());
+        paras.put("mch_refund_no", mch_refund_no);
+        paras.put("fee_type", fee_type);
+        paras.put("mch_order_no", mch_order_no);
+        paras.put("refund_fee", refund_fee.toString());
+        paras.put("total_fee", total_fee.toString());
         return KsherPost(PayDomain + "/order_refund", paras);
     }
-
+    public String OrderRefund(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/order_refund", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
     /**
     退款查询
     :param kwargs:
@@ -452,11 +533,19 @@ public class ksher_pay_sdk {
             mch_refund_no、ksher_refund_no、channel_refund_no三选一
             mch_order_no、ksher_order_no、channel_order_no三选一
     **/
-    public String RefundQuery(String mchRefundNo, String mchOrderNo) throws Exception{
+    public String RefundQuery(String mch_refund_no, String mch_order_no) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
-        paras.put("mch_refund_no", mchRefundNo);
-        paras.put("mch_order_no", mchOrderNo);
+        paras.put("mch_refund_no", mch_refund_no);
+        paras.put("mch_order_no", mch_order_no);
         return KsherPost(PayDomain + "/refund_query", paras);
+    }
+    public String RefundQuery(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/refund_query", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
     /**
     汇率查询
@@ -467,14 +556,21 @@ public class ksher_pay_sdk {
         date
     :return:
     **/
-    public String RateQuery(String channel, String feeType,String  date) throws Exception{
+    public String RateQuery(String channel, String fee_type,String  date) throws Exception{
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
         paras.put("channel", channel);
-        paras.put("fee_type", feeType);
+        paras.put("fee_type", fee_type);
         paras.put("date", date);
         return KsherPost(PayDomain + "/rate_query", paras);
     }
-
+    public String RateQuery(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(PayDomain + "/rate_query", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
     /**
     聚合支付商户查询订单支付状态
     :param kwargs:
@@ -486,6 +582,14 @@ public class ksher_pay_sdk {
         java.util.Map<String, String> paras = new java.util.HashMap<String, String>();
         paras.put("mch_order_no", mch_order_no);
         return KsherPost(GateDomain + "/gateway_order_query", paras);
+    }
+    public String GatewayOrderQuery(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(GateDomain + "/gateway_order_query", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
     }
 
     /**
@@ -533,5 +637,13 @@ public class ksher_pay_sdk {
         paras.put("total_fee", total_fee.toString());
         return KsherPost(GateDomain + "/gateway_pay", paras);
 	}
+    public String GatewayPay(java.util.Map<String, String> paras){
+        try {
+            return KsherPost(GateDomain + "/gateway_pay", paras);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ex.getMessage();
+        }
+    }
 
 }
