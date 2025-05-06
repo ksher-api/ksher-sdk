@@ -202,8 +202,11 @@ namespace Ksherpay
                 //MyUtil.logDictionary(response);
                 //Console.WriteLine("=============");
 
-
-                if (responses["code"].ToString() == "0")
+                if (endpoint.Contains("/merchant_info"))
+                {
+                    return request.Result;
+                }
+                else if (responses["code"].ToString() == "0")
                 {
                     if (!checkSignature(request.Result))
                     {

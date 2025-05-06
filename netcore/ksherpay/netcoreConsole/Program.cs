@@ -31,6 +31,8 @@ namespace netcoreConsole
                 Console.WriteLine("8 - create order   (quick_pay)");
                 Console.WriteLine("9 - query order    (order_query)");
                 Console.WriteLine("10 - refund order  (order_refund)");
+                Console.WriteLine("--- Other API ---");
+                Console.WriteLine("11 - merchant info  (merchant_info)");
                 Console.WriteLine("99 - exit");
 
                 cmd = Console.ReadLine();
@@ -124,7 +126,7 @@ namespace netcoreConsole
                     Console.WriteLine("Enter amount (int only, Enter 150 is 1.50): ");
                     string total_fee = Console.ReadLine();
 
-                    Console.WriteLine("Enter channel (alipay,wechat,airpay,promptpay,truemoney) ");
+                    Console.WriteLine("Enter channel (alipay,wechat,airpay,promptpay,truemoney,alipayplus) ");
                     Console.WriteLine("(Please check mid type support for make sure account support)");
                     string channel = Console.ReadLine();
 
@@ -184,7 +186,7 @@ namespace netcoreConsole
                     Console.WriteLine("Enter amount (int only, Enter 150 is 1.50): ");
                     string total_fee = Console.ReadLine();
 
-                    Console.WriteLine("Enter channel (alipay,wechat,airpay,linepay,truemoney) ");
+                    Console.WriteLine("Enter channel (alipay,wechat,airpay,linepay,truemoney,alipayplus) ");
                     Console.WriteLine("(Please check mid type support for make sure account support)");
                     string channel = Console.ReadLine();
 
@@ -243,6 +245,13 @@ namespace netcoreConsole
 
                     var response_refund = ksherpay.order_refund(refundRequest);
                     Console.WriteLine(response_refund);
+                }
+                else if (cmd == "11")
+                {
+
+                    IDictionary<string, string> merchantinfoRequest = new Dictionary<string, string>();
+                    var response_merchantinfo = ksherpay.merchant_info(merchantinfoRequest);
+                    Console.WriteLine(response_merchantinfo);
                 }
 
                 Console.WriteLine("===========");
