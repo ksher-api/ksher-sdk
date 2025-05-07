@@ -1,7 +1,7 @@
 /*
 @Time   : 2019-05-17 10:51
 @Author : apei
-@Desc   : 
+@Desc   :
 */
 
 package main
@@ -26,20 +26,45 @@ IATE8U+GHPfygz0oBJwLfPaOAIdxup1x38UswEl/
 `)
 
 func main() {
-	client :=  KsherGO.New(appId,privateKey)
-	//s := "a我cd"
-	//ss := string([]rune(s)[1:])
-	//fmt.Println(ss)
-	//
-	//nowStr := time.Now().Format("20060102150405.000")
-	//fmt.Println(nowStr)
-	//response, err := client.QuickPay(strings.Replace(nowStr, ".", "", -1 ), "THB", "12345", "wechat","", 100)
-	//response, err := client.GatewayPay("999668", "THB", "wechat,alipay,airpay", "2233", "https://www.baidu.com/",
-	//	"https://www.baidu.com/", "test", "https://www.baidu.com/", "PC", 100)
-	response, err := client.GatewayOrderQuery("999668")
-	if err !=nil{
-		fmt.Println("QuickPay error:", err.Error())
-	}else{
-		fmt.Println("QuickPay success:", response)
+	client := KsherGO.New(appId, privateKey)
+	// Create a new scanner that reads from the console
+	// scanner := bufio.NewScanner(os.Stdin)
+
+	mch_order_no := KsherGO.GetTimeStamp()
+
+	// fmt.Print("total_fee: ")
+	// var total_fee int
+	// fmt.Scanln(&total_fee)
+	total_fee := 100
+
+	// fmt.Print("channel: ")
+	// scanner.Scan()
+	// channel := scanner.Text()
+	channel := "promptpay"
+
+	response, err := client.NativePay(mch_order_no, "THB", channel, total_fee)
+	if err != nil {
+		fmt.Println("NativePay error:", err.Error())
+	} else {
+		fmt.Println("NativePay success:", response)
 	}
+
+	// response, err := client.GatewayOrderQuery("20230324183042886198")
+	// fmt.Println("eeee")
+	// if err != nil {
+	// 	fmt.Println("QuickPay error:", err.Error())
+	// } else {
+	// 	fmt.Println("QuickPay success:", response)
+	// }
+
+	fmt.Println(" - merchant_info")
+	merchant_infoResponse, err := client.MerchantInfo()
+	if err != nil {
+		fmt.Println("error:", err.Error())
+	} else {
+		fmt.Printf("type of response is %T\n", merchant_infoResponse)
+		fmt.Printf("response, %v\n", merchant_infoResponse)
+
+	}
+
 }

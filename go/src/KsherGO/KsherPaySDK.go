@@ -210,12 +210,17 @@ func KsherPost(url string, postValue url.Values, privateKeyData, publicKey []byt
 	}
 	//json.NewDecoder(resp.Body).Decode(&response)
 	if response.Code == 0 {
+		if strings.Contains(url, "merchant_info") {
+			return response, err
+		}
+
 		err = KsherVerify(response, publicKey)
 		if err == nil {
 			return response, nil
 		} else {
 			return response, err
 		}
+
 	}
 
 	return response, nil
@@ -633,4 +638,19 @@ func (client Client) CancelOrder(mch_order_no string) (response KsherResp, err e
 		"mch_order_no": {mch_order_no},
 	}
 	return KsherPost(GateDomain+"/cancel_order", postValue, client.PrivateKey, client.PublicKey)
+}
+
+/*
+merchant_info
+:param kwargs:
+	Not need
+:return:
+*/
+func (client Client) MerchantInfo() (response KsherResp, err error) {
+	postValue := url.Values{
+		"appid":      {client.AppId},
+		"nonce_str":  {GetNonceStr(4)},
+		"time_stamp": {GetTimeStamp()},
+	}
+	return KsherPost(PayDomain+"/merchant_info", postValue, client.PrivateKey, client.PublicKey)
 }
