@@ -182,6 +182,9 @@ public class ksher_pay_sdk {
         System.out.println(result.toString());
 
         JSONObject json = JSONObject.parseObject(result.toString());
+        if (url.indexOf("/refund_query")!=0 || url.indexOf("/merchant_info")!=0){
+            return result.toString();
+        }
         boolean isVerify = KsherVerify(json.getJSONObject("data"), json.getString("sign"));
         if(isVerify){
             return result.toString();
